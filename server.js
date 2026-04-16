@@ -128,6 +128,42 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
         });
 });
 
+const { spawn } = require('child_process');
+
+// start python process
+const pythonProcess = spawn('python', ['predict_logic.py']);
+
+// handle data coming back from python script
+pythonProcess.stdout.on('data', (data) => {
+    const message = data.toString();
+    console.log("result:", message);
+});
+
+pythonProcess.stderr.on('data', (data) => {
+    console.error(`Python Error: ${data}`);
+});
+
+// api for python script to predict
+app.post('/api/predict', (req, res) => {
+    const payload = JSON.stringify({
+        path: req.body.path,
+        keypoints: req.body.keypoints
+    });
+
+    // Send data to Python's stdin
+    pythonProcess.stdin.write(payload + '\n');
+
+    // Wait for the next output from Python once
+    pythonProcess.stdout.once('data', (data) => {
+        try {
+            const result = JSON.parse(data.toString());
+            res.json(result);
+        } catch (e) {
+            res.status(500).json({ error: "Failed to parse response" });
+        }
+    });
+});
+
 //server starts and listens on port 3000
 app.listen(port, function(){
     console.log("App started on port 3000");
