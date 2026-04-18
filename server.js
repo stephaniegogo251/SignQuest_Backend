@@ -27,7 +27,7 @@ app.use(function(req, res, next){
 });
  
 //built-in express middleware to parse incoming json requests
-app.use(express.json());
+app.use(express.json({ limit: '10mb'}));
 
 //middleware to serve static files (image files in lessons)
 app.use('/static', express.static(path.join(__dirname, 'static')));

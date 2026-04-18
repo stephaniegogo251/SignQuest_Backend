@@ -5,8 +5,8 @@ from keras.models import load_model
 
 # load asl and esl model
 MODELS = {
-    'ASL': load_model('models/asl_model7.h5'),
-    'ESL': load_model('models/asl_model6.h5')
+    'ASL': load_model('models/asl_model.h5'),
+    'ESL': load_model('models/esl_model.h5')
 }
 
 # labels for the sign list
@@ -18,8 +18,9 @@ asl_signs = ['1', '3', 'bye', 'can', 'coffee', 'doctor', 'fainted', 'he',
             'to meet', 'too', 'travelling', 'wait', 'walk', 'want', 'with', 
             'yes', 'you', 'your welcome']
 
-esl_signs = ['salaam alaikum']
-
+esl_signs = ['1','50','card','emirates id','excellent','fine','finish','how are you','i','idle',
+                      'know','laqeemat','majboos','near','no','plate','room','salaam alaikum','small',
+                      'sorry','thank you','travel','want','yes']
 
 def main():
     while True:
