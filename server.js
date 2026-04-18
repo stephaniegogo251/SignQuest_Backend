@@ -131,7 +131,7 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
 const { spawn } = require('child_process');
 
 // start python process
-const pythonProcess = spawn('python', ['predict_logic.py']);
+const pythonProcess = spawn('python', ['predict_script.py']);
 
 // handle data coming back from python script
 pythonProcess.stdout.on('data', (data) => {
