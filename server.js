@@ -189,8 +189,6 @@ app.post('/api/predict', (req, res) => {
     pythonProcess.stdin.write(payload + '\n');
 });
 
-const port = process.env.PORT || 3000; // Use Render's port or 3000 locally
-
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
