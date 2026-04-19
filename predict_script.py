@@ -39,7 +39,7 @@ def main():
         
         try:
             data = json.loads(line)
-            path = data.get('path', 'asl')  # Default to ASL if not provided
+            path = data.get('path', 'asl').lower()  # Default to ASL if not provided
             if path == 'asl':
                 SIGNS = np.array(asl_signs)
             else:
