@@ -61,12 +61,12 @@ def main():
                 "sign": predicted_sign,
                 "confidence": confidence
             }
-            print(json.dumps(output))
+            sys.stdout.write(json.dumps(output) + '\n')
             sys.stdout.flush() #sends data immeduately
 
         except Exception as e:
             error_output = {"error": str(e)}
-            print(json.dumps(error_output))
+            sys.stdout(json.dumps(error_output) + '\n')
             sys.stdout.flush()
 
 if __name__ == "__main__":
