@@ -145,6 +145,7 @@ pythonProcess.stderr.on('data', (data) => {
 
 // api for python script to predict
 app.post('/api/predict', (req, res) => {
+    console.log("Received body:", req.body);
     const payload = JSON.stringify({
         path: req.body.path,
         keypoints: req.body.keypoints
