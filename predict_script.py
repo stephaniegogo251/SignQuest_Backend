@@ -1,12 +1,18 @@
 import sys
+import os
 import json
 import numpy as np
 from keras.models import load_model
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+ASL_MODEL_PATH = os.path.join(BASE_DIR, 'models', 'asl_model.h5')
+ESL_MODEL_PATH = os.path.join(BASE_DIR, 'models', 'esl_model.h5')
+
 # load asl and esl model
 MODELS = {
-    'ASL': load_model('models/asl_model.h5'),
-    'ESL': load_model('models/esl_model.h5')
+    'ASL': load_model(ASL_MODEL_PATH),
+    'ESL': load_model(ESL_MODEL_PATH)
 }
 
 # labels for the sign list
