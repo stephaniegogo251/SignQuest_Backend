@@ -7,9 +7,6 @@ const port = process.env.PORT || 3000;
 dotenv.config();
 const cors = require('cors');
 
-//built-in express middleware to parse incoming json requests
-app.use(express.json({ limit: '10mb'}));
-
 //config express.js
 //cors middleware - applied to all requests to allow resources to be shared across diff domains
 app.use ((req,res,next) => {
@@ -21,6 +18,9 @@ app.use ((req,res,next) => {
     next();
 });
 app.use(cors());
+
+//built-in express middleware to parse incoming json requests
+app.use(express.json({ limit: '10mb'}));
 
 //logging middleware
 app.use(function(req, res, next){
