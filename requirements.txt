@@ -1,6 +1,6 @@
 numpy==1.26.4
 mediapipe==0.10.21
 opencv-python-headless==4.10.0.84
-tensorflow==2.16.1
+tensorflow-cpu==2.15.0
 scikit-learn==1.5.2
 requests==2.33.0
