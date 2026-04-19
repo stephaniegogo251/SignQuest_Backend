@@ -10,7 +10,7 @@ MODELS = {
 }
 
 # labels for the sign list
-SIGNS = np.array()
+SIGNS = None
 
 asl_signs = ['1', '3', 'bye', 'can', 'coffee', 'doctor', 'fainted', 'he', 
             'hello', 'help', 'hot', 'hotel', 'i', 'idle', 'lost', 'needs', 
@@ -19,10 +19,13 @@ asl_signs = ['1', '3', 'bye', 'can', 'coffee', 'doctor', 'fainted', 'he',
             'yes', 'you', 'your welcome']
 
 esl_signs = ['1','50','card','emirates id','excellent','fine','finish','how are you','i','idle',
-                      'know','laqeemat','majboos','near','no','plate','room','salaam alaikum','small',
-                      'sorry','thank you','travel','want','yes']
+            'know','laqeemat','majboos','near','no','plate','room','salaam alaikum','small',
+            'sorry','thank you','travel','want','yes']
+
 
 def main():
+    global SIGNS
+
     while True:
         line = sys.stdin.readline() # read data sent from Node.js
         if not line:
