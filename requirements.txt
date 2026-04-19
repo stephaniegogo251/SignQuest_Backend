@@ -1,4 +1,6 @@
-numpy
-mediapipe
-opencv-python-headless
-tensorflow-cpu
+numpy==1.26.4
+mediapipe==0.10.21
+opencv-python-headless==4.10.0.84
+tensorflow==2.16.1
+scikit-learn==1.5.2
+requests==2.33.0
