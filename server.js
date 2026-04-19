@@ -135,8 +135,12 @@ const pythonProcess = spawn('python', ['predict_script.py']);
 
 // handle data coming back from python script
 pythonProcess.stdout.on('data', (data) => {
-    const message = data.toString();
-    console.log("result:", message);
+    const message = data.toString().trim();
+    if (message.startsWith('{')) { // Only process if it looks like a JSON object
+        try {
+            const result = JSON.parse(message);
+        } catch (e) { console.log("Non-JSON output from Python:", message); }
+    }
 });
 
 pythonProcess.stderr.on('data', (data) => {
