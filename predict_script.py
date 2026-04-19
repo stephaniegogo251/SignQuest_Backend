@@ -27,7 +27,7 @@ def main():
         try:
             data = json.loads(line)
             path = data.get('path', 'ASL').upper()
-            keypoints = np.array(data['keypoints']) # (30, 258)
+            keypoints = np.array(data['keypoints'])
 
             model = load_model(asl_path) if path == 'ASL' else load_model(esl_path)
             signs_list = asl_signs if path == 'ASL' else esl_signs
