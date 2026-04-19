@@ -127,49 +127,50 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
             res.send((result.result.n === 1) ? {msg: 'success'} : {msg: 'error'});
         });
 });
-
 const { spawn } = require('child_process');
 
-// start python process
-const pythonProcess = spawn('python', ['predict_script.py']);
+// Use python3 for Render/Linux environments
+const pythonProcess = spawn('python3', ['predict_script.py']);
 
-// handle data coming back from python script
-pythonProcess.stdout.on('data', (data) => {
-    const message = data.toString().trim();
-    if (message.startsWith('{')) { // Only process if it looks like a JSON object
-        try {
-            const result = JSON.parse(message);
-        } catch (e) { console.log("Non-JSON output from Python:", message); }
-    }
-});
-
+// listens for errors
 pythonProcess.stderr.on('data', (data) => {
     console.error(`Python Error: ${data}`);
 });
 
-// api for python script to predict
 app.post('/api/predict', (req, res) => {
-    console.log("Received body:", req.body);
+    if (!pythonProcess || pythonProcess.killed) {
+        return res.status(500).json({ error: "Python process is not running" });
+    }
+
     const payload = JSON.stringify({
         path: req.body.path,
         keypoints: req.body.keypoints
     });
 
-    console.log("PAYLOAD: ",payload);
+    // remove any old listeners
+    pythonProcess.stdout.removeAllListeners('data');
 
-    // Send data to Python's stdin
-    pythonProcess.stdin.write(payload + '\n');
-
-    // Wait for the next output from Python once
+    // set up one-time listener for specific request
     pythonProcess.stdout.once('data', (data) => {
-        try {
-            const result = JSON.parse(data.toString());
-            console.log("RESULT: ", result);
-            res.json(result);
-        } catch (e) {
-            res.status(500).json({ error: "Failed to parse response" });
+        const message = data.toString().trim();
+        console.log("Raw Python Output:", message);
+
+        // Check if the message is actually JSON
+        if (message.startsWith('{')) {
+            try {
+                const result = JSON.parse(message);
+                console.log("SUCCESS: Sending result to frontend");
+                return res.json(result); 
+            } catch (e) {
+                return res.status(500).json({ error: "JSON Parse Error", raw: message });
+            }
+        } else {
+            console.warn("Python sent non-JSON info:", message);
+            return res.status(500).json({ error: "Expected JSON but got something else", raw: message });
         }
     });
+
+    pythonProcess.stdin.write(payload + '\n');
 });
 
 //server starts and listens on port 3000
