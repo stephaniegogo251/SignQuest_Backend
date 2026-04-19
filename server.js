@@ -7,6 +7,9 @@ const port = process.env.PORT || 3000;
 dotenv.config();
 const cors = require('cors');
 
+//built-in express middleware to parse incoming json requests
+app.use(express.json({ limit: '10mb'}));
+
 //config express.js
 //cors middleware - applied to all requests to allow resources to be shared across diff domains
 app.use ((req,res,next) => {
@@ -25,9 +28,6 @@ app.use(function(req, res, next){
     console.log(`${req.method} ${req.path} ${JSON.stringify(req.query)} time: ${new Date()}`);
     next();
 });
- 
-//built-in express middleware to parse incoming json requests
-app.use(express.json({ limit: '10mb'}));
 
 //middleware to serve static files (image files in lessons)
 app.use('/static', express.static(path.join(__dirname, 'static')));
@@ -150,6 +150,8 @@ app.post('/api/predict', (req, res) => {
         keypoints: req.body.keypoints
     });
 
+    console.log("PAYLOAD: ",payload);
+
     // Send data to Python's stdin
     pythonProcess.stdin.write(payload + '\n');
 
@@ -157,6 +159,7 @@ app.post('/api/predict', (req, res) => {
     pythonProcess.stdout.once('data', (data) => {
         try {
             const result = JSON.parse(data.toString());
+            console.log("RESULT: ", result);
             res.json(result);
         } catch (e) {
             res.status(500).json({ error: "Failed to parse response" });
