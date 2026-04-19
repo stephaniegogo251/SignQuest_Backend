@@ -127,6 +127,7 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
             res.send((result.result.n === 1) ? {msg: 'success'} : {msg: 'error'});
         });
 });
+
 const { spawn } = require('child_process');
 
 // Use python3 for Render/Linux environments
@@ -137,7 +138,22 @@ pythonProcess.stderr.on('data', (data) => {
     console.error(`Python Error: ${data}`);
 });
 
+let isPythonReady = false;
+
+pythonProcess.stdout.on('data', (data) => {
+    const message = data.toString().trim();
+    
+    if (message === "READY") {
+        isPythonReady = true;
+        console.log("models loaded!");
+    }
+});
+
 app.post('/api/predict', (req, res) => {
+    if (!isPythonReady) {
+        return res.status(503).json({ error: "AI model is still loading, please wait 30 seconds." });
+    }
+
     if (!pythonProcess || pythonProcess.killed) {
         return res.status(500).json({ error: "Python process is not running" });
     }
@@ -173,8 +189,8 @@ app.post('/api/predict', (req, res) => {
     pythonProcess.stdin.write(payload + '\n');
 });
 
-//server starts and listens on port 3000
-app.listen(port, function(){
-    console.log("App started on port 3000");
-    console.log("http://localhost:3000")
+const port = process.env.PORT || 3000; // Use Render's port or 3000 locally
+
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });

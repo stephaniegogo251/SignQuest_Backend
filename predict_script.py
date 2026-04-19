@@ -15,6 +15,8 @@ MODELS = {
     'ESL': load_model(ESL_MODEL_PATH)
 }
 
+print("Ready")
+
 # labels for the sign list
 SIGNS = None
 
