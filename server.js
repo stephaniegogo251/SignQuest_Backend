@@ -29,7 +29,7 @@ app.use(function(req, res, next){
     next();
 });
 
-//middleware to serve static files (image files in lessons)
+//middleware to serve static files
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
 //middleware to handle and send static files
