@@ -57,7 +57,7 @@ MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
     db = client.db('SignQuest');  //connect to specific database
     console.log("Connected to database!");
 
-    app.kisten(port, () => {
+    app.listen(port, () => {
         console.log(`Server running on ${port}`);
     });
 })
