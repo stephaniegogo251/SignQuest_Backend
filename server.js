@@ -128,67 +128,6 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
         });
 });
 
-const { spawn } = require('child_process');
-
-// Use python3 for Render/Linux environments
-const pythonProcess = spawn('python3', ['predict_script.py']);
-
-// listens for errors
-pythonProcess.stderr.on('data', (data) => {
-    console.error(`Python Error: ${data}`);
-});
-
-let isPythonReady = false;
-
-pythonProcess.stdout.on('data', (data) => {
-    const message = data.toString().trim();
-    
-    if (message === "READY") {
-        isPythonReady = true;
-        console.log("models loaded!");
-    }
-});
-
-app.post('/api/predict', (req, res) => {
-    if (!isPythonReady) {
-        return res.status(503).json({ error: "AI model is still loading, please wait 30 seconds." });
-    }
-
-    if (!pythonProcess || pythonProcess.killed) {
-        return res.status(500).json({ error: "Python process is not running" });
-    }
-
-    const payload = JSON.stringify({
-        path: req.body.path,
-        keypoints: req.body.keypoints
-    });
-
-    // remove any old listeners
-    pythonProcess.stdout.removeAllListeners('data');
-
-    // set up one-time listener for specific request
-    pythonProcess.stdout.once('data', (data) => {
-        const message = data.toString().trim();
-        console.log("Raw Python Output:", message);
-
-        // Check if the message is actually JSON
-        if (message.startsWith('{')) {
-            try {
-                const result = JSON.parse(message);
-                console.log("SUCCESS: Sending result to frontend");
-                return res.json(result); 
-            } catch (e) {
-                return res.status(500).json({ error: "JSON Parse Error", raw: message });
-            }
-        } else {
-            console.warn("Python sent non-JSON info:", message);
-            return res.status(500).json({ error: "Expected JSON but got something else", raw: message });
-        }
-    });
-
-    pythonProcess.stdin.write(payload + '\n');
-});
-
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
