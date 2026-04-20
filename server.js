@@ -54,7 +54,14 @@ let db;
 //connect to mongodb
 MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(client => {
-    db = client.db('SignQuest')}); //connect to specific database
+    db = client.db('SignQuest');  //connect to specific database
+    console.log("Connected to database!");
+
+    app.kisten(port, () => {
+        console.log(`Server running on ${port}`);
+    });
+})
+.catch(err => console.error("Failed to connect to mongodb", err));
 
 //default route for root path
 app.get('/', (req, res, next) => {
@@ -63,6 +70,7 @@ app.get('/', (req, res, next) => {
 
 //route paramter middleware to attach collection to the request object for all other request handlers
 app.param('collectionName', (req, res, next, collectionName) => {
+    if (!db) return res.status(503).send({ msg: "Database not ready" });
     req.collection = db.collection(collectionName);
     return next();
 });
@@ -77,7 +85,7 @@ app.get('/collection/:collectionName', (req, res, next) => {
 
 //post route to add order to orders collection
 app.post('/collection/:collectionName', (req, res, next) => {
-    req.collection.insert(req.body, (e, results) => {
+    req.collection.insertOne(req.body, (e, results) => {
         if (e) return next(e);
         res.send(results.ops);
     });
@@ -117,15 +125,26 @@ app.get('/collection/:collectionName/search', (req, res, next) => {
 const ObjectID = require('mongodb').ObjectID;
 
 //put route to update available spaces of a lesson
+// app.put('/collection/:collectionName/:id', (req, res, next) => {
+//     req.collection.updateOne(
+//         {_id: new ObjectID(req.params.id)},
+//         {$set: req.body},
+//         {safe: true, multi: false},
+//         (e, result) => {
+//             if (e) return next(e)
+//             res.send((result.result.n === 1) ? {msg: 'success'} : {msg: 'error'});
+//         });
+// });
+
 app.put('/collection/:collectionName/:id', (req, res, next) => {
     req.collection.updateOne(
-        {_id: new ObjectID(req.params.id)},
-        {$set: req.body},
-        {safe: true, multi: false},
+        { _id: new ObjectID(req.params.id) },
+        { $set: req.body },
         (e, result) => {
-            if (e) return next(e)
-            res.send((result.result.n === 1) ? {msg: 'success'} : {msg: 'error'});
-        });
+            if (e) return next(e);
+            res.send(result.modifiedCount === 1 ? { msg: 'success' } : { msg: 'error' });
+        }
+    );
 });
 
 app.listen(port, () => {
