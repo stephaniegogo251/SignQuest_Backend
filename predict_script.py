@@ -14,8 +14,8 @@ esl_signs = ['1','50','card','emirates id','excellent','fine','finish','how are 
             'sorry','thank you','travel','want','yes']
 
 
-asl_path = "https://signquest-backend-yhj4.onrender.com/static/models/aslmodel.h5"
-esl_path = "https://signquest-backend-yhj4.onrender.com/static/models/eslmodel.h5"
+asl_path = "https://signquest-backend-yhj4.onrender.com/static/models/asl_small.keras"
+esl_path = "https://signquest-backend-yhj4.onrender.com/static/models/esl_small.keras"
 
 def main():
     while True:
