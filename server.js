@@ -101,20 +101,7 @@ app.get('/collection/:collectionName/search', (req, res, next) => {
             {signAName: {$regex: searchPattern}},
         ]
     };
-
-    // let numQuery = 0;
-    // if (!isNaN(parseInt(query))) {
-    //     numQuery = parseInt(query);
-    //     searchQuery = {
-    //     $or: [
-    //         {name: {$regex: searchPattern}},
-    //         {location: {$regex: searchPattern}},
-    //         {price: numQuery},
-    //         {availableSeats:numQuery}
-    //     ]
-    // };
-    // }
-
+    
     req.collection.find(searchQuery).toArray((e, results) => {
         if (e) return next(e);
         res.send(results);
