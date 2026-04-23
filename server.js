@@ -130,7 +130,7 @@ app.put('/collection/users/:id', (req, res, next) => {
         completedLevels: req.body.completedLevels,
         badges: req.body.badges,
         signScores: req.body.signScores,
-        [`totalXP.${levelID}`]: score
+        totalXP: req.body.totalXP
     };
 
     req.collection.updateOne(
