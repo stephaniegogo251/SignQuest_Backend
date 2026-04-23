@@ -121,3 +121,24 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
         }
     );
 });
+
+app.put('/collection/users/:id', (req, res, next) => {
+    const levelID = req.body.levelID;
+    const score = req.body.score;
+
+    const updateData = {
+        completedLevels: req.body.completedLevels,
+        badges: req.body.badges,
+        signScores: req.body.signScores,
+        [`totalXP.${levelID}`]: score
+    };
+
+    req.collection.updateOne(
+        { _id: new ObjectID(req.params.id) },
+        { $set: updateData },
+        (e, result) => {
+            if (e) return next(e);
+            res.send({ msg: 'success' });
+        }
+    );
+});
