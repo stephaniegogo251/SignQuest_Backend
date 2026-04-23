@@ -111,18 +111,6 @@ app.get('/collection/:collectionName/search', (req, res, next) => {
 
 const ObjectID = require('mongodb').ObjectID;
 
-//put route to update available spaces of a lesson
-// app.put('/collection/:collectionName/:id', (req, res, next) => {
-//     req.collection.updateOne(
-//         {_id: new ObjectID(req.params.id)},
-//         {$set: req.body},
-//         {safe: true, multi: false},
-//         (e, result) => {
-//             if (e) return next(e)
-//             res.send((result.result.n === 1) ? {msg: 'success'} : {msg: 'error'});
-//         });
-// });
-
 app.put('/collection/:collectionName/:id', (req, res, next) => {
     req.collection.updateOne(
         { _id: new ObjectID(req.params.id) },
@@ -132,8 +120,4 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
             res.send(result.modifiedCount === 1 ? { msg: 'success' } : { msg: 'error' });
         }
     );
-});
-
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
 });
