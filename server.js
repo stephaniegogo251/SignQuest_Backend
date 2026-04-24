@@ -128,7 +128,7 @@ app.get('/collection/:collectionName/:id', (req, res, next) => {
     const id = req.params.id;
 
     // Convert the string ID into a MongoDB ObjectId
-    req.collection.findOne({ _id: new ObjectId(id) }, (e, result) => {
+    req.collection.findOne({ _id: new ObjectID(id) }, (e, result) => {
         if (e) return next(e);
         
         if (!result) {
