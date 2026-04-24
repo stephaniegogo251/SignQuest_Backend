@@ -75,7 +75,7 @@ app.param('collectionName', (req, res, next, collectionName) => {
     return next();
 });
 
-//get route to return lessons collection as an array
+//get route to return collection as an array
 app.get('/collection/:collectionName', (req, res, next) => {
     req.collection.find({}).toArray((e, results) => {
         if (e) return next(e);
@@ -83,7 +83,7 @@ app.get('/collection/:collectionName', (req, res, next) => {
     }); 
 });
 
-//post route to add order to orders collection
+//post route to add new data to collection
 app.post('/collection/:collectionName', (req, res, next) => {
     req.collection.insertOne(req.body, (e, results) => {
         if (e) return next(e);
@@ -91,7 +91,7 @@ app.post('/collection/:collectionName', (req, res, next) => {
     });
 });
 
-//get route to search for specific lessons from collection
+//get route to search for specific signs from collection
 app.get('/collection/:collectionName/search', (req, res, next) => {
     const query = req.query.q;
     const searchPattern = new RegExp(query, 'i'); //case-insensitive regex pattern
@@ -111,6 +111,7 @@ app.get('/collection/:collectionName/search', (req, res, next) => {
 
 const ObjectID = require('mongodb').ObjectID;
 
+//updates specific document
 app.put('/collection/:collectionName/:id', (req, res, next) => {
     req.collection.updateOne(
         { _id: new ObjectID(req.params.id) },
@@ -122,6 +123,23 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
     );
 });
 
+//returns specific document of collection
+app.get('/collection/:collectionName/:id', (req, res, next) => {
+    const id = req.params.id;
+
+    // Convert the string ID into a MongoDB ObjectId
+    req.collection.findOne({ _id: new ObjectId(id) }, (e, result) => {
+        if (e) return next(e);
+        
+        if (!result) {
+            return res.status(404).send({ message: "Item not found" });
+        }
+        
+        res.send(result);
+    });
+});
+
+//updates specific user's progress
 app.put('/collection/users/:id', (req, res, next) => {
     const levelID = req.body.levelID;
     const score = req.body.score;
